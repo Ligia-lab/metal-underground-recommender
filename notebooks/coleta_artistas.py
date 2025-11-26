@@ -27,7 +27,7 @@ print(sp is not None)
 
 # %%
 
-# 2- definir bandas seed
+# 2- buscar artistas seed 
 
 seed_artists_names = [
     'Mastodon',
@@ -39,15 +39,19 @@ seed_artists_names = [
 
 print(f'Bandas seed: {seed_artists_names}')
 
-# %%
-
-# 3- buscar artistas seed + relacionados
-
 all_artists = {}
 
-for name in seed_artists_names:
+print("\n=== Buscando artistas seed no Spotify ===")
 
-    search_result = sp.search(q=name, type='artist', limit=1)
+for name in seed_artists_names:
+    print(f'\n>>>Procurando: {name}')
+
+    try:
+        search_result = sp.search(q=name, type='artist', limit=1)
+    except Exception as e:
+        print(f'Erro ao buscar {name}: {e}')
+        continue    
+    
     items = search_result['artists']['items']
 
     if not items:
@@ -57,6 +61,10 @@ for name in seed_artists_names:
     artist = items[0]
     artist_id = artist['id']
 
+    if artist_id in all_artists:
+        print(f'{artist["name"]} (ID já existe), pulando.')
+        continue
+
     all_artists[artist_id] = {
         'id': artist_id,
         'name': artist['name'],
@@ -65,30 +73,9 @@ for name in seed_artists_names:
         'spotify_url': artist['external_urls'].get('spotify', None)
     }
 
-    try:
-        related_data = sp.artist_related_artists(artist_id)
-        related = related_data.get("artists", [])
-    except spotipy.exceptions.SpotifyException as e:
-        print(f"Nenhum artista relacionado encontrado para {name} (ID={artist_id})")
-        print("Motivo:", e)
-        continue
+    print(f"Artista encontrado: {artist['name']} (ID={artist_id})")
+    print(f"Popularidade: {artist['popularity']}, Gêneros: {artist['genres']}")
 
-
-    for rel in related:
-        rel_id = rel['id']
-
-        if rel_id not in all_artists:
-            all_artists[rel_id] = {
-                'id': rel_id,
-                'name': rel['name'],
-                'popularity': rel['popularity'],
-                'genres': rel['genres'],
-                'spotify_url': rel['external_urls'].get('spotify',None)
-            }
-
-
-print(f'Total de artistas: {len(all_artists)}')
-
-
+print(f"\nTotal de artistas seed encontrados (sem duplicata): {len(all_artists)}")
 
 # %%
