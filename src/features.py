@@ -1,6 +1,20 @@
 #%%
 
 import spotipy
+import numpy as np
+
+#%%
+
+AUDIO_FEATURES = [
+    'acousticness',
+    'danceability',
+    'energy',
+    'instrumentalness',
+    'liveness',
+    'speechiness',
+    'valence',
+    'tempo'
+]
 
 #%%
 
@@ -59,5 +73,42 @@ def collect_seed_artists(sp, seed_artists_names):
 
     print(f"\nTotal de artistas seed encontrados (sem duplicata): {len(all_artists)}")
     return all_artists
+
+# %%
+
+def get_artist_vector(sp, artist_id: str, country: str = 'US'):
+    try:
+        top = sp.artist_top_tracks(artist_id, country=country)['tracks']
+    except Exception as e:
+        print(f'Erro ao buscar top tracks do artista {artist_id}: {e}')
+        return None
+    
+    track_ids = [t['id'] for t in top]
+    if not track_ids:
+        print(f'Artista {artist_id} não tem top tracks.')
+        return None
+    
+    try:
+        feats = sp.audio_features(track_ids)
+    except Exception as e:
+        print(f'Erro ao buscar audio_features do artista {artist_id}: {e}')
+        return None
+    
+    feats = [f for f in feats if f is not None]
+    if not feats:
+        print(f'Sem audio_features válidas para {artist_id}.')
+        return None
+    
+    try:
+        matrix = np.array([
+            [f[feat] for feat in AUDIO_FEATURES]
+            for f in feats
+        ])
+    except KeyError as e:
+        print(f'Feature faltando para {artist_id}: {e}.')
+        return None
+    
+    mean_vector = matrix.mean(axis=0)
+    return mean_vector
 
 # %%
