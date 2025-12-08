@@ -2,19 +2,10 @@
 
 import spotipy
 import numpy as np
-
-#%%
-
-AUDIO_FEATURES = [
-    'acousticness',
-    'danceability',
-    'energy',
-    'instrumentalness',
-    'liveness',
-    'speechiness',
-    'valence',
-    'tempo'
-]
+import pandas as pd
+from sklearn.preprocessing import MultiLabelBinarizer
+from sklearn.metrics.pairwise import cosine_similarity
+import ast
 
 #%%
 
@@ -76,39 +67,71 @@ def collect_seed_artists(sp, seed_artists_names):
 
 # %%
 
-def get_artist_vector(sp, artist_id: str, country: str = 'US'):
-    try:
-        top = sp.artist_top_tracks(artist_id, country=country)['tracks']
-    except Exception as e:
-        print(f'Erro ao buscar top tracks do artista {artist_id}: {e}')
-        return None
+BASE_COLS = ['id', 'name', 'popularity', 'genres', 'spotify_url']
+
+#%%
+
+def _normalize_genres(value):
+    if isinstance(value, list):
+        return value
     
-    track_ids = [t['id'] for t in top]
-    if not track_ids:
-        print(f'Artista {artist_id} não tem top tracks.')
-        return None
+    if pd.isna(value):
+        return []
     
-    try:
-        feats = sp.audio_features(track_ids)
-    except Exception as e:
-        print(f'Erro ao buscar audio_features do artista {artist_id}: {e}')
-        return None
-    
-    feats = [f for f in feats if f is not None]
-    if not feats:
-        print(f'Sem audio_features válidas para {artist_id}.')
-        return None
-    
-    try:
-        matrix = np.array([
-            [f[feat] for feat in AUDIO_FEATURES]
-            for f in feats
-        ])
-    except KeyError as e:
-        print(f'Feature faltando para {artist_id}: {e}.')
-        return None
-    
-    mean_vector = matrix.mean(axis=0)
-    return mean_vector
+    if isinstance(value, str):
+        text = value.strip()
+        if text == "" or text.lower() == "nan":
+            return []
+        
+        try:
+            parsed = ast.literal_eval(text)
+            if isinstance(parsed, list):
+                # garantir que tudo é str e sem espaços extras
+                return [str(x).strip() for x in parsed]
+        except Exception:
+            pass
+        
+        if text.startswith("[") and text.endswith("]"):
+            text = text[1:-1].strip()
+        
+        parts = [s.strip() for s in text.split(",") if s.strip()]
+
+        return parts
+        
+    return []
+
+# %%
+
+def add_genre_vectors(df_artists: pd.DataFrame):
+
+    df = df_artists.copy()
+    df['genres'] = df['genres'].apply(_normalize_genres) 
+
+    print("Exemplos de genres normalizados:")
+    print(df["genres"].head())
+
+    mlb = MultiLabelBinarizer()
+    genre_matrix = mlb.fit_transform(df['genres'])
+
+    print(f"\nTotal de gêneros distintos encontrados: {len(mlb.classes_)}")
+    if len(mlb.classes_) > 0:
+        print("Alguns gêneros:", mlb.classes_[:10])
+
+    genre_df = pd.DataFrame(
+        genre_matrix,
+        columns=mlb.classes_,
+        index=df.index
+    )
+
+    df_with_genres = pd.concat([df, genre_df], axis=1)
+
+    return df_with_genres, mlb
+
+# %%
+
+def get_genre_feature_matrix(df_with_genres: pd.DataFrame):
+    genre_cols = [c for c in df_with_genres.columns if c not in BASE_COLS]
+    X = df_with_genres[genre_cols].values
+    return X, genre_cols
 
 # %%

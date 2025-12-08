@@ -1,20 +1,22 @@
 #%%
-ROOT_PATH = os.path.abspath("..")   # um nível acima da pasta notebooks
-if ROOT_PATH not in sys.path:
-    sys.path.append(ROOT_PATH)
 
 import os
 import sys
-from src.spotify_client import get_spotify_client
-from src.features import get_artist_by_name, collect_seed_artists
-
-#%%
-
-# adiciona a pasta raiz do projeto ao PYTHONPATH
 
 sys.path.append(os.path.abspath(".."))
 
+import pandas as pd
+from src.spotify_client import get_spotify_client
+from src.features import get_artist_by_name, collect_seed_artists
+from src.dataset import build_basic_artists_df
+from src.features import add_genre_vectors, get_genre_feature_matrix
+
+#%%
+
 sp = get_spotify_client()
+
+#%%
+
 results = sp.search(q='Mastodon', type='artist', limit=1)
 results['artists']['items'][0]['name'], results['artists']['items'][0]['id']
 
@@ -37,45 +39,73 @@ seed_artists_names = [
     'Gojira',
     'Jinjer',
     'Tool',
-    'Lacuna Coil'
+    'Lacuna Coil',
+    'Eths',
+    'Alien Weaponry',
+    'Behemoth',
+    'Crypta',
+    'Epica',
+    'Ghost',
+    'HIM',
+    'Dir en Grey',
+    'Septicflesh',
+    'Siouxsie and the Banshees',
+    'Sisters of Mercy',
+    'VV',
+    'Depeche Mode',
+    'Joy Division',
+    'London After Midnight'
 ]
 
+#%%
+
 all_artists = collect_seed_artists(sp, seed_artists_names)
-all_artists
 
+#%%
+
+len(all_artists)
+
+# %%
+
+df_artists = build_basic_artists_df(all_artists)
+df_artists
 
 # %%
 
-from src.features import get_artist_vector, AUDIO_FEATURES
-
-sp = get_spotify_client()
-# %%
-artist = get_artist_by_name(sp, "Metallica")
-artist["name"], artist["id"]
+df_artists.to_csv("../data/artists_basic.csv", index=False)
 
 # %%
-artist_id = artist["id"]
-vec = get_artist_vector(sp, artist_id)
 
-print("Vetor:", vec)
-print("Tipo :", type(vec))
-print("Shape:", vec.shape if vec is not None else None)
+df_artists = pd.read_csv('../data/artists_basic.csv')
 
 # %%
-dict(zip(AUDIO_FEATURES, vec))
+
+df_artists.head()
+
+#%%
+
+df_with_genres, mlb = add_genre_vectors(df_artists)
+df_with_genres.head()
 
 # %%
-# 1) pegar uma música qualquer
-track_search = sp.search(q="Master of Puppets", type="track", limit=1)
-track = track_search["tracks"]["items"][0]
-track_id = track["id"]
-track["name"], track_id
+
+X, genre_cols = get_genre_feature_matrix(df_with_genres)
+X.shape, len(genre_cols)
 
 # %%
-try:
-    feats = sp.audio_features([track_id])
-    print("Resultado:", feats)
-except Exception as e:
-    print("Erro:", e)
+
+df_with_genres, mlb = add_genre_vectors(df_artists)
+# %%
+
+df_with_genres.columns
 
 # %%
+
+df = df_artists
+
+print("RAW VALUES DA COLUNA 'genres':\n")
+for i in range(5):
+    print(f"{i}: {repr(df.loc[i, 'genres'])}")
+
+# %%
+
