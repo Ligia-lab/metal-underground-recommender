@@ -90,7 +90,7 @@ def recommend_artists_by_genre(df_with_genres: pd.DataFrame,
     )
 
     #remover bandas com popularidade acima de 50
-    df_scores = df_scores[df_scores['popularity'] <= 55]
+    df_scores = df_scores[df_scores['popularity'] <= 54]
 
     #remover bandas sem similaridade
     df_scores = df_scores[df_scores['similarity'] > 0]

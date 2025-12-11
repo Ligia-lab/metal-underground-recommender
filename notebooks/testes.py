@@ -44,18 +44,13 @@ seed_artists_names = [
     'Lacuna Coil',
     'Eths',
     'Alien Weaponry',
-    'Behemoth',
     'Crypta',
     'Epica',
     'Ghost',
     'HIM',
-    'Dir en Grey',
-    'Septicflesh',
-    'Siouxsie and the Banshees',
-    'Sisters of Mercy',
-    'Depeche Mode',
-    'Joy Division',
-    'London After Midnight'
+    'Dir en Grey', 
+    'Nightwish',
+    'Type O Negative'   
 ]
 
 #%%
@@ -108,7 +103,8 @@ recs[["name", "genres", "popularity", "similarity", "underground_score", "final_
 
 sp = get_spotify_client()
 
-user_likes = ['Mastodon',
+user_likes = [
+    'Mastodon',
     'Gojira',
     'Jinjer',
     'Tool',
@@ -119,12 +115,8 @@ user_likes = ['Mastodon',
     'Epica',
     'Ghost',
     'HIM',
-    'Dir en Grey',
-    'Siouxsie and the Banshees',
-    'Sisters of Mercy',
-    'Depeche Mode',
-    'Joy Division',
-    'London After Midnight'
+    'Nightwish',
+    'Type O Negative'    
 ]
 
 
@@ -137,7 +129,7 @@ recs = recommend_artists_by_genre(
     underground_weight=0.3,
 )
 
-recs[["name", "genres", "popularity", "similarity", "underground_score", "final_score", 'spotify_url']]
+recs[["name", "genres", "popularity", "similarity", "underground_score", "final_score"]]
 
 # %%
 
