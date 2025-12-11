@@ -102,13 +102,16 @@ def expand_artists_from_user_likes(sp: spotipy.Spotify,
                                    max_per_genre_search: int = 20):
     """
     Expande o universo de artistas a partir das bandas que o usuário gosta,
-    usando a API do Spotify (related artists + busca por gênero).
+    usando a API do Spotify (busca por gênero).
 
     Retorna:
         df_with_genres : DataFrame com artistas (likes + relacionados),
                          já com colunas de gêneros 0/1 prontas para recomendação.
     """
     all_artists = {}
+    max_related=50
+    max_per_genre_search=50
+
 
     print("\n=== Expandindo artistas a partir do gosto do usuário ===")
 
@@ -136,18 +139,6 @@ def expand_artists_from_user_likes(sp: spotipy.Spotify,
         
         add_artist(artist)
 
-        #tenta pegar artistas relacionados
-        try:
-            related_data = sp.artist_related_artists(artist_id)
-            related = related_data.get('artists', [])
-            print(f'  {len(related)} artistas relacionados encontrados')
-        except spotipy.exceptions.SpotifyException as e:
-            print(f'  Não foi possível buscar related artists de {name}: {e}')
-            related = []
-
-        for rel in related[:max_related]:
-            add_artist(rel)
-
         #para cada genero de artista buscar mais artista por genero
         for g in artist.get('genres', []):
             print(f'  Buscando artistas pelo gênero: {g}')
@@ -169,8 +160,10 @@ def expand_artists_from_user_likes(sp: spotipy.Spotify,
 
     #adiciona colunas de generos 0/1
     df_with_genres, mlb = add_genre_vectors(df_artists)
+    df_with_genres = df_with_genres[df_with_genres['genres'].apply(len) > 0]
 
     return df_with_genres
 
 
 # %%
+

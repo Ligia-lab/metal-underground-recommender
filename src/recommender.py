@@ -89,6 +89,12 @@ def recommend_artists_by_genre(df_with_genres: pd.DataFrame,
         w_sim * df_scores['similarity'] + w_und * df_scores['underground_score']
     )
 
+    #remover bandas com popularidade acima de 50
+    df_scores = df_scores[df_scores['popularity'] <= 55]
+
+    #remover bandas sem similaridade
+    df_scores = df_scores[df_scores['similarity'] > 0]
+
     #remover bandas que o usuário ja informou
     df_scores = df_scores[~df_scores['name'].str.lower().isin(user_likes_lower)]
 
@@ -96,5 +102,6 @@ def recommend_artists_by_genre(df_with_genres: pd.DataFrame,
     df_scores = df_scores.sort_values('final_score', ascending=False)
 
     return df_scores.head(top_k)
+
 
 # %%

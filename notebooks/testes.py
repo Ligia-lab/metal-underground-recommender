@@ -108,7 +108,25 @@ recs[["name", "genres", "popularity", "similarity", "underground_score", "final_
 
 sp = get_spotify_client()
 
-user_likes = ["Mastodon", "Gojira"]
+user_likes = ['Mastodon',
+    'Gojira',
+    'Jinjer',
+    'Tool',
+    'Lacuna Coil',
+    'Eths',
+    'Alien Weaponry',
+    'Crypta',
+    'Epica',
+    'Ghost',
+    'HIM',
+    'Dir en Grey',
+    'Siouxsie and the Banshees',
+    'Sisters of Mercy',
+    'Depeche Mode',
+    'Joy Division',
+    'London After Midnight'
+]
+
 
 df_with_genres = expand_artists_from_user_likes(sp, user_likes)
 
@@ -119,5 +137,10 @@ recs = recommend_artists_by_genre(
     underground_weight=0.3,
 )
 
-recs[["name", "genres", "popularity", "similarity", "underground_score", "final_score"]]
+recs[["name", "genres", "popularity", "similarity", "underground_score", "final_score", 'spotify_url']]
+
+# %%
+
+len(df_with_genres)
+
 # %%
