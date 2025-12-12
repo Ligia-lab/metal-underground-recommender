@@ -138,7 +138,7 @@ pip install -r requirements.txt
 4. Configure environment variables  
 
 Create a .env file with:
-``
+```
 SPOTIFY_CLIENT_ID=your_client_id  
 SPOTIFY_CLIENT_SECRET=your_client_secret  
 ```
