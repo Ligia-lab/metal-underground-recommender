@@ -188,6 +188,8 @@ Essas limitações são tratadas explicitamente no design do sistema.
 
 ---
 
+
+
 ## 🎯 Objetivo do Projeto
 
 Este projeto foi criado com foco em:
@@ -196,6 +198,51 @@ Este projeto foi criado com foco em:
 - Engenharia de dados aplicada  
 - Sistemas de recomendação content-based  
 - Uso consciente de APIs reais e suas restrições  
+
+---
+
+## 🚀 Próximas Etapas do Projeto
+
+As próximas etapas do **Metal Underground Recommender** foram definidas com base no estado atual do repositório e em evoluções tecnicamente viáveis.
+
+### 1️⃣ Consolidação do app em Streamlit
+Melhorar a interface para interação do usuário:
+
+- Links clicáveis para os artistas no Spotify
+
+### 2️⃣ Cache local para evitar chamadas repetidas à API
+Implementar persistência local dos dados processados para melhorar performance:
+
+- Cache utilizando `pickle`, `Parquet` ou SQLite
+- Redução significativa de chamadas à Spotify API
+- Execução mais rápida e estável da aplicação
+
+### 3️⃣ Criação de uma API com FastAPI
+Expor o recomendador como um serviço independente:
+
+- Endpoint que recebe:
+  
+      {
+        "likes": ["Gojira", "Mastodon"]
+      }
+
+- Retorno estruturado com artistas recomendados, similaridade e popularidade
+- Possibilidade de reutilizar o core do recomendador fora do Streamlit
+
+### 4️⃣ Melhoria do cálculo de similaridade
+Refinar a lógica atual de recomendação:
+
+- Uso de TF-IDF para vetorização de gêneros
+- Threshold mínimo de similaridade configurável
+- Ajuste de peso por gênero para melhorar relevância das recomendações
+
+### 5️⃣ Notebook de apresentação do projeto
+Criar um notebook explicativo e visual para documentação e portfólio:
+
+- Visão geral do workflow do projeto
+- Gráficos e análises exploratórias
+- Distribuição de gêneros
+- Explicação detalhada da lógica do recomendador
 
 ---
 
