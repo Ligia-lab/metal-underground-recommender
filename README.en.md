@@ -198,6 +198,52 @@ This project was created with a focus on:
 
 ---
 
+## 🚀 Next Steps of the Project
+
+The next steps of the **Metal Underground Recommender** are defined based on the current state of the repository and on technically feasible evolutions.
+
+### 1️⃣ Streamlit App Consolidation
+Improve interface for user interaction:
+
+- Clickable links to artists on Spotify
+
+### 2️⃣ Local Cache to Avoid Repeated API Calls
+Implement local persistence of processed data to improve performance:
+
+- Cache using `pickle`, `Parquet`, or SQLite
+- Significant reduction in Spotify API calls
+- Faster and more stable application execution
+
+### 3️⃣ FastAPI API Creation
+Expose the recommender as an independent service:
+
+- Endpoint that receives:
+  
+      {
+        "likes": ["Gojira", "Mastodon"]
+      }
+
+- Structured response with recommended artists, similarity, and popularity
+- Ability to reuse the recommender core outside Streamlit
+
+### 4️⃣ Similarity Calculation Improvements
+Refine the current recommendation logic:
+
+- Use of TF-IDF for genre vectorization
+- Configurable minimum similarity threshold
+- Genre-based weighting to improve recommendation relevance
+
+### 5️⃣ Project Presentation Notebook
+Create an explanatory and visual notebook for documentation and portfolio purposes:
+
+- Overview of the complete workflow
+- Charts and exploratory analyses
+- Genre distribution analysis
+- Detailed explanation of the recommender logic
+
+---
+
+
 ## 📜 License
 
 This project is intended for educational and demonstrative purposes.
