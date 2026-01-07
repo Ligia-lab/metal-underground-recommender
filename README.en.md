@@ -195,6 +195,7 @@ This project was created with a focus on:
 - Applied data engineering  
 - Content-based recommendation systems  
 - Conscious and realistic use of real-world APIs  
+- Only works with metal bands
 
 ---
 
@@ -202,7 +203,7 @@ This project was created with a focus on:
 
 The next steps of the **Metal Underground Recommender** are defined based on the current state of the repository and on technically feasible evolutions.
 
-### 1️⃣ Streamlit App Consolidation
+### 1️⃣ Streamlit App Consolidation ✅ 
 Improve interface for user interaction:
 
 - Clickable links to artists on Spotify

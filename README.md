@@ -183,6 +183,7 @@ recs = recommend_artists_by_genre(
 - Não existe endpoint para listar todo o catálogo do Spotify  
 - O projeto trabalha com expansão controlada por gênero  
 - Endpoints como related artists e audio features não são utilizados  
+- Só funciona com bandas de metal
 
 Essas limitações são tratadas explicitamente no design do sistema.
 
@@ -205,10 +206,10 @@ Este projeto foi criado com foco em:
 
 As próximas etapas do **Metal Underground Recommender** foram definidas com base no estado atual do repositório e em evoluções tecnicamente viáveis.
 
-### 1️⃣ Consolidação do app em Streamlit
+### 1️⃣ Consolidação do app em Streamlit ✅
 Melhorar a interface para interação do usuário:
 
-- Links clicáveis para os artistas no Spotify
+- Links clicáveis para os artistas no Spotify 
 
 ### 2️⃣ Cache local para evitar chamadas repetidas à API
 Implementar persistência local dos dados processados para melhorar performance:
