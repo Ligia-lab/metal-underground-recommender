@@ -128,7 +128,7 @@ if st.button('Gerar recomendações'):
         st.error('Não consegui montar um universo de artistas a partir dessas bandas.')
         st.stop()
 
-    st.success(f'Universo de artistas montado: {len(df_with_genres)} artistas encontrados.')
+    st.success(f'Universo de artistas montado.')
 
 
     with st.spinner('Calculando recomendações....'):
@@ -165,7 +165,14 @@ if st.button('Gerar recomendações'):
 
     st.dataframe(
         recs[cols_to_show].reset_index(drop=True),
-        use_container_width=True
+        column_config={
+            "spotify_url": st.column_config.LinkColumn(
+                "Link no Spotify", 
+                display_text="Abrir no Spotify" 
+            )
+        },
+        use_container_width=True,
+        hide_index=True
     )
 
     st.caption(f"Total de recomendações possíveis (antes de limitar em top_k): {len(recs)}")
