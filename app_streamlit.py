@@ -10,7 +10,9 @@ import streamlit as st
 from src.spotify_client import get_spotify_client
 from src.dataset import expand_artists_from_user_likes
 from src.recommender import recommend_artists_by_genre
+from src.cache.cache_db import init_db
 
+init_db()
 
 
 #TÍTULO
