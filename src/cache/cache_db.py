@@ -14,9 +14,9 @@ def init_db():
     cursor = conn.cursor()
 
     cursor.execute("""
-    CREATE TABLE IF NOT EXISTS spotify_artist (
+    CREATE TABLE IF NOT EXISTS lastfm_artist (
         artist_name TEXT PRIMARY KEY,
-        data TEXT
+        data        TEXT
     )
     """)
 

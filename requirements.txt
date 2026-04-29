@@ -1,4 +1,4 @@
-spotipy
+requests
 pandas
 numpy
 scikit-learn
